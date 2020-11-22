@@ -30,7 +30,7 @@ class LuksPlugin(vmdb.Plugin):
 
 class CryptsetupStepRunner(vmdb.StepRunnerInterface):
     def get_key_spec(self):
-        return {"cryptsetup": str, "tag": str, "key-file": "", "key-cmd": ""}
+        return {"cryptsetup": str, "tag": str, "key-file": "", "key-cmd": "", "addl-flags": []}
 
     def run(self, values, settings, state):
         underlying = values["cryptsetup"]
@@ -67,7 +67,7 @@ class CryptsetupStepRunner(vmdb.StepRunnerInterface):
                 )
             assert 0
 
-        vmdb.runcmd(["cryptsetup", "-q", "luksFormat", dev, key_file])
+        vmdb.runcmd(["cryptsetup", "-q"] + values["addl-flags"] + ["luksFormat", dev, key_file])
         vmdb.runcmd(
             [
                 "cryptsetup",
